@@ -1,10 +1,12 @@
 package de.tuc.burgershop;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import net.rgielen.fxweaver.core.FxWeaver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -28,11 +30,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        mFxmlLoader.setLocation(getClass().getResource("/fxml/BurgershopView.fxml"));
-        mRootNode = mFxmlLoader.load();
-
-        stage.setTitle("Burgershop");
-        Scene scene = new Scene(mRootNode, 800, 600);
+        FxWeaver fxWeaver = mContext.getBean(FxWeaver.class);
+        mRootNode = fxWeaver.loadView(ManagerController.class);
+        Scene scene = new Scene(mRootNode);
         stage.setScene(scene);
         stage.show();
     }
@@ -40,5 +40,6 @@ public class App extends Application {
     @Override
     public void stop() throws Exception {
         mContext.stop();
+        Platform.exit();
     }
 }
