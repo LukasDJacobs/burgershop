@@ -5,9 +5,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 @Service
-public class OrdersService {
+public class OrdersService extends Observable {
 
     private List<Order> mOrders;
 
@@ -21,6 +22,18 @@ public class OrdersService {
 
     public void addOrder(Order order) {
         mOrders.add(order);
+        notifyObservers(mOrders);
     }
 
+    @Override
+    public void notifyObservers(Object arg) {
+        this.setChanged();
+        super.notifyObservers(arg);
+    }
+
+    public void removeOldestOrder() {
+        if (!mOrders.isEmpty())
+            mOrders.remove(0);
+        notifyObservers(mOrders);
+    }
 }

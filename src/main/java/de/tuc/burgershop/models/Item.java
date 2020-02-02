@@ -10,4 +10,6 @@ public abstract class Item {
     public void setPrice(float price) {
         mPrice = price;
     }
+
+    public abstract String getDisplayString();
 }

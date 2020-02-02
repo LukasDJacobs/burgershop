@@ -4,9 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.2-internal"
-            fx:controller="de.tuc.burgershop.ManagerController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.tuc.burgershop.ManagerController">
    <top>
       <Label fx:id="label_title" text="Super Lecker Burger" BorderPane.alignment="CENTER">
          <font>
@@ -15,9 +13,14 @@
       </Label>
    </top>
    <center>
-      <ListView fx:id="list_orders" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <ListView fx:id="ordersList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
-      <Button fx:id="btn_open_order_view" mnemonicParsing="false" onAction="#onOpenOrderView" text="Bestellansicht öffnen" BorderPane.alignment="CENTER" />
+      <HBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="btn_open_order_view" mnemonicParsing="false" onAction="#onOpenOrderView" text="Bestellansicht öffnen" />
+            <Button fx:id="removeOldestOrderButton" defaultButton="true" mnemonicParsing="false" onAction="#removeOldestOrder" text="Älteste Bestellung entfernen" />
+         </children>
+      </HBox>
    </bottom>
 </BorderPane>

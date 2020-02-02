@@ -30,6 +30,31 @@ public class Burger extends Item {
         mDoublePatty = doublePatty;
     }
 
+    @Override
+    public String getDisplayString() {
+        String s = "";
+        switch (mPatty) {
+            case Beef:
+                s = "Rind";
+                break;
+
+            case Chicken:
+                s = "Huhn";
+                break;
+
+            case Veggie:
+                s = "Gemüse";
+                break;
+        }
+
+        if (mDoubleCheese)
+            s += "; Doppelt Käse";
+        if (mDoublePatty)
+            s+= "; Doppeltes Patty";
+
+        return s;
+    }
+
     public enum Patty {
         Beef,
         Chicken,

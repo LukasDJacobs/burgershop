@@ -21,6 +21,30 @@ public class Drink extends Item {
         mIce = ice;
     }
 
+    @Override
+    public String getDisplayString() {
+        String s = "";
+
+        switch (mDrinkType) {
+            case Cola:
+                s = "Cola";
+                break;
+
+            case Water:
+                s = "Wasser";
+                break;
+        }
+
+        if (mIce)
+            s += " mit ";
+        else
+            s += " ohne ";
+
+        s += "Eis";
+
+        return s;
+    }
+
     public enum Type {
         Cola,
         Water,
