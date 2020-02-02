@@ -12,4 +12,17 @@ public class Order {
     public List<Item> getItems() {
         return mItems;
     }
+
+    public float getOrderPrice() {
+        float price = 0.f;
+
+        if (mItems == null || mItems.isEmpty())
+            return price;
+
+        for(Item item : mItems) {
+            price += item.getPrice();
+        }
+
+        return price;
+    }
 }
