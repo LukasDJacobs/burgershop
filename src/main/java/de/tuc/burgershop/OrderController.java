@@ -28,14 +28,16 @@ public class OrderController {
 
     private OrdersService mOrdersService;
 
-    @FXML private VBox orderViewRoot;
-    @FXML private ComboBox pattyBox;
-    @FXML private ComboBox drinkBox;
-    @FXML private CheckBox doubleCheeseBox;
-    @FXML private CheckBox doublePattyBox;
-    @FXML private CheckBox iceBox;
-    @FXML private CheckBox friesBox;
-    @FXML private Label priceLabel;
+    private Order mOrder;
+
+    @FXML VBox orderViewRoot;
+    @FXML ComboBox pattyBox;
+    @FXML ComboBox drinkBox;
+    @FXML CheckBox doubleCheeseBox;
+    @FXML CheckBox doublePattyBox;
+    @FXML CheckBox iceBox;
+    @FXML CheckBox friesBox;
+    @FXML Label priceLabel;
 
     @Autowired
     public OrderController(OrdersService ordersService) {
@@ -55,7 +57,7 @@ public class OrderController {
     }
 
     public void onOrderPlaced(ActionEvent actionEvent) {
-        Order order = getOrder();
+        Order order = createOrder();
         mOrdersService.addOrder(order);
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -88,15 +90,23 @@ public class OrderController {
         drinkBox.setValue(availableDrinks.get(0));
     }
 
-    private Order getOrder() {
-        List<Item> items = new ArrayList<Item>();
-        items.add(getBurger());
-        items.add(getDrink());
+    public void setOrder(Order order) {
+        mOrder = order;
+    }
 
-        if (friesBox.isSelected()) {
-            Fries fries = new Fries();
-            fries.setPrice(1.5f);
-            items.add(fries);
+    public void setOrder() {
+        mOrder = createOrder();
+    }
+
+    Order createOrder(Burger burger, Drink drink, boolean fries) {
+        List<Item> items = new ArrayList<Item>();
+        items.add(burger);
+        items.add(drink);
+
+        if (fries) {
+            Fries f = new Fries();
+            f.setPrice(1.5f);
+            items.add(f);
         }
 
         Order order = new Order();
@@ -105,25 +115,34 @@ public class OrderController {
         return order;
     }
 
-    private Burger getBurger() {
-        Burger burger = new Burger();
+    private Order createOrder() {
+        return createOrder(getBurger(), getDrink(), friesBox.isSelected());
+    }
 
+    private Burger getBurger() {
+        Burger.Patty patty = null;
         switch (pattyBox.getValue().toString()) {
             case "Rind":
-                burger.setPatty(Burger.Patty.Beef);
+                patty = Burger.Patty.Beef;
                 break;
 
             case "Huhn":
-                burger.setPatty(Burger.Patty.Chicken);
+                patty = Burger.Patty.Chicken;
                 break;
 
             case "Gemüse":
-                burger.setPatty(Burger.Patty.Veggie);
+                patty = Burger.Patty.Veggie;
                 break;
         }
 
-        burger.setDoubleCheese(doubleCheeseBox.isSelected());
-        burger.setDoublePatty(doublePattyBox.isSelected());
+        return getBurger(patty, doublePattyBox.isSelected(), doubleCheeseBox.isSelected());
+    }
+
+    Burger getBurger(Burger.Patty patty, boolean doublePatty, boolean doubleCheese) {
+        Burger burger = new Burger();
+        burger.setPatty(patty);
+        burger.setDoubleCheese(doubleCheese);
+        burger.setDoublePatty(doublePatty);
 
         // Preis wird hier auch sehr "prototypisch" berechnet, das würde normalerweise etwas ausgefeilter erfolgen,
         // mit Daten die aus einer Datei oder Datenbank kommen o.Ä.
@@ -138,30 +157,43 @@ public class OrderController {
     }
 
     private Drink getDrink() {
-        Drink drink = new Drink();
-
+        Drink.Type type = null;
         switch (drinkBox.getValue().toString()) {
             case "Cola":
-                drink.setDrinkType(Drink.Type.Cola);
-                drink.setPrice(2.f);
+                type = Drink.Type.Cola;
                 break;
 
             case "Wasser":
-                drink.setDrinkType(Drink.Type.Water);
-                drink.setPrice(1.f);
+                type = Drink.Type.Water;
                 break;
         }
 
-        drink.setIce(iceBox.isSelected());
+        return getDrink(type, iceBox.isSelected());
+    }
+
+    Drink getDrink(Drink.Type type, boolean ice) {
+        Drink drink = new Drink();
+        drink.setDrinkType(type);
+        drink.setIce(ice);
+
+        switch (type) {
+            case Cola:
+                drink.setPrice(2.f);
+                break;
+
+            case Water:
+                drink.setPrice(1.f);
+                break;
+        }
 
         return drink;
     }
 
     public void updatePrice(ActionEvent actionEvent) {
-        Order order = getOrder();
+        setOrder();
         NumberFormat formatter = NumberFormat.getCurrencyInstance();
 
-        float price = order.getOrderPrice();
+        float price = mOrder.getOrderPrice();
         String priceString = formatter.format(price);
 
         priceLabel.setText(priceString);
